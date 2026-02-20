@@ -14,12 +14,11 @@ test.describe('User Inyerface - bad examples (intentional)', () => {
 
   test('test 2', async ({ page }) => {
     await openLanding(page);
-
-    const titleVisible = await page.getByRole('heading', { name: /user inyerface/i }).isVisible();
-    expect(titleVisible).toBeTruthy();
-
-    const startText = await page.getByRole('button', { name: /start/i }).textContent();
-    expect(startText).toContain('Start');
+    expect(await page.getByTestId('status').isVisible()).toBeTruthy();
+    expect(await page.getByTestId('name').textContent()).toBe('Alice');
+    expect(page.url()).toMatch(/\/dashboard$/);
+    expect(await page.locator('li').count()).toBe(5);
+    expect(await page.getByRole('button', { name: 'Submit' }).isEnabled()).toBe(true);
   });
 
   test('test 3', async ({ page }) => {
@@ -29,13 +28,14 @@ test.describe('User Inyerface - bad examples (intentional)', () => {
   });
 
   test('test 4', async ({ page }) => {
-    await page.goto(baseUrl, { waitUntil: 'networkidle' });
+    await page.goto('/app', { waitUntil: 'networkidle' });
     await page.getByRole('button', { name: /start/i }).click();
     await expect(page.getByRole('heading', { name: /personal details/i })).toBeVisible();
   });
 
   test('test 5', async ({ page }) => {
     await openLanding(page);
-    await page.getByRole('button', { name: /start/i }).click({ force: true });
+    await page.getByRole('button', { name: 'Submit' }).click();
+    await page.getByText('Submit').click();
   });
 });
